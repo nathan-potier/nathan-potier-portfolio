@@ -1,14 +1,709 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>POTIER Nathan</title>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nathan Potier | Informatique & Algorithmique</title>
+    <style>
+        /* --- VARIABLES & BASE (Style Apple) --- */
+        :root {
+            --bg-color: #f5f5f7;
+            --text-main: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent: #0071e3;
+            --glass: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --shadow: 0 20px 40px rgba(0,0,0,0.06);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
 
+        body, html {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
 
-  </head>
-  <body>
-    <h1>Bonjour</h1>
-  </body>
+        /* --- ARRIÈRE-PLAN RÉSEAU (Canvas) --- */
+        #network-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            opacity: 0.7;
+            pointer-events: none; /* AJOUTEZ CETTE LIGNE : Empêche le doigt d'accrocher le canvas */
+        }
+
+        /* --- SECTION ACCUEIL (100vh - Plein Écran) --- */
+        .hero {
+            position: relative;
+            z-index: 1;
+            /* Utilise la hauteur dynamique du viewport pour éviter les bugs Safari/Chrome */
+            height: 100vh; 
+            height: 100svh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            /* On rajoute un petit padding en bas pour que le contenu ne soit jamais collé au bord */
+            padding-bottom: 80px; 
+        }
+
+        .hero-pic-container {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: white;
+            padding: 6px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .hero-pic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            transform: scale(1.5);
+        }
+
+        .hero-name {
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #1d1d1f 0%, #434350 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        /* Barre de contact discrète sur l'accueil */
+        .hero-social-bar {
+            margin-top: 25px;
+            display: flex;
+            gap: 20px;
+            z-index: 2;
+        }
+
+        .hero-social-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-social-link:hover {
+            color: var(--accent);
+            transform: translateY(-3px);
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .hero-social-link svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* Indicateur de scroll */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 100px; /* Remonté pour éviter la barre Safari/Chrome */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.6;
+            animation: pulse 2s infinite;
+            cursor: pointer;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(5px); }
+            100% { opacity: 0.4; transform: translateY(0); }
+        }
+
+        /* --- CONTENU CV (Au scroll) --- */
+        .cv-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 50px 20px 120px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        /* Cartes Style Apple */
+        .section-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: var(--shadow);
+            
+            /* Pour l'animation d'apparition */
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .section-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-header::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: rgba(0,0,0,0.08);
+            margin-left: 25px;
+        }
+
+        /* Style des entrées (Diplômes, Projets...) */
+        .entry {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .entry:last-child { margin-bottom: 0; }
+
+        .entry-left {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 1rem;
+            text-align: right;
+            padding-top: 4px;
+        }
+
+        .entry-right {
+            border-left: 2px solid rgba(0,0,0,0.05);
+            padding-left: 30px;
+        }
+
+        .entry-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+
+        .entry-subtitle {
+            font-size: 1.05rem;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .entry-desc {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .highlight-bar {
+            background: rgba(0, 113, 227, 0.08);
+            color: var(--accent);
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin-top: 15px;
+            display: inline-block;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Grille Compétences */
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .skill-tag {
+            background: white;
+            border: 1px solid rgba(0,0,0,0.05);
+            padding: 12px 24px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 113, 227, 0.1);
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            color: var(--accent);
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 768px) {
+            .hero-name { font-size: 2.8rem; }
+            .entry { grid-template-columns: 1fr; gap: 10px; }
+            .entry-left { text-align: left; padding-top: 0; padding-bottom: 10px; }
+            .entry-right { border-left: none; padding-left: 0; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .section-card { padding: 30px 20px; }
+        }
+        /* Ajustement pour les écrans de faible hauteur (Mobile ou petit navigateur) */
+        @media (max-height: 850px) {
+        .hero-pic-container {
+            width: 160px; /* Réduit encore plus la photo */
+            height: 160px;
+            margin-bottom: 10px;
+        }
+        
+        .hero-name {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .hero-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-desc {
+            font-size: 0.9rem;
+            max-width: 90%;
+            line-height: 1.4;
+        }
+
+        .hero-social-bar {
+            margin-top: 10px;
+        }
+
+        .scroll-indicator {
+            bottom: 70px; /* Ajusté pour rester visible au-dessus des barres */
+        }
+        
+        .scroll-indicator span {
+            font-size: 0.75rem; /* Texte plus petit pour gagner de la place */
+        }
+    }
+        /* Ajustement spécifique pour les téléphones très petits (iPhone SE, etc.) */
+        @media (max-height: 600px) {
+            .hero-pic-container {
+                width: 100px;
+                height: 100px;
+            }
+
+        }
+        @media (max-height: 450px){
+            .hero-desc {
+                display: none; /* Cache la description sur les écrans minuscules pour garder le bouton visible */
+            }
+        }
+        @media (max-height: 390px){
+          .hero-social-bar {
+              display: none; /* Cache la barre de réseaux sociaux sur les écrans très petits pour éviter l'encombrement */
+          }
+
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="network-canvas"></canvas>
+
+    <section class="hero">
+        <div class="hero-pic-container">
+            <img src="nathan_photo.jpg" alt="Nathan Potier" class="hero-pic" onerror="this.src='https://via.placeholder.com/200'">
+        </div>
+        <h1 class="hero-name">Nathan Potier</h1>
+        <h2 class="hero-title">Informatique Fondamentale & Algorithmique</h2>
+        <p class="hero-desc">Top 5% de promotion à l'Université Paris Cité.<br>Allier rigueur mathématique, finance et architecture logicielle.</p>
+        
+        <div class="hero-social-bar">
+            <a href="mailto:nathan.pro.po@gmail.com" class="hero-social-link" title="Email">
+                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </a>
+            <a href="https://linkedin.com/in/potiern" target="_blank" class="hero-social-link" title="LinkedIn">
+                <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5V13.2a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            </a>
+            <a href="https://github.com/ton-pseudo" target="_blank" class="hero-social-link" title="GitHub">
+                <svg viewBox="0 0 24 24"><path d="M12 .3a12.1 12.1 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.3 2.8.1 3.2.8.8 1.3 1.9 1.3 3.1 0 4.7-2.8 5.6-5.5 6 .4.3.8 1 .8 2.2v3.3c0 .3.2.7.8.6A12.1 12.1 0 0 0 12 .3z"/></svg>
+            </a>
+            <a href="tel:+33770042562" class="hero-social-link" title="Téléphone">
+                <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            </a>
+        </div>
+        
+        <div class="scroll-indicator" onclick="document.getElementById('cv-start').scrollIntoView({behavior: 'smooth'})">
+            <span>Découvrir le profil</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+        </div>
+    </section>
+
+    <div class="cv-container" id="cv-start">
+        
+        <section class="section-card">
+            <h2 class="section-header">Excellence Académique</h2>
+            
+            <div class="entry">
+                <div class="entry-left">2023 — 2026</div>
+                <div class="entry-right">
+                    <div class="entry-title">Licence Informatique Fondamentale</div>
+                    <div class="entry-subtitle">Université Paris Cité (Diderot)</div>
+                    <p class="entry-desc">Cursus intensif axé sur la théorie, la conception d'algorithmes et l'architecture des systèmes d'exploitation.</p>
+                    <div class="highlight-bar">
+                        ✨ Top Promo : 6ème/160 (L3). OCaml (19,69/20), C (18,5/20).
+                    </div>
+                </div>
+            </div>
+
+            <div class="entry">
+                <div class="entry-left">2020 — 2023</div>
+                <div class="entry-right">
+                    <div class="entry-title">Baccalauréat Général</div>
+                    <div class="entry-subtitle">Lycée Viollet-Le-Duc</div>
+                    <p class="entry-desc">Spécialités : Mathématiques (18/20) et Numérique et Sciences Informatiques (19/20).</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2 class="section-header">Projets & Algorithmique</h2>
+            
+            <div class="entry">
+                <div class="entry-left">Java / Graphes</div>
+                <div class="entry-right">
+                    <div class="entry-title">Simulateur Urbain & Pathfinding</div>
+                    <p class="entry-desc">Modélisation d'un environnement urbain basé sur la <strong>théorie des graphes</strong>. Implémentation, optimisation et comparaison d'algorithmes de recherche de chemin complexe (<strong>Dijkstra et A*</strong>).</p>
+                </div>
+            </div>
+
+            <div class="entry">
+                <div class="entry-left">Java / Sockets</div>
+                <div class="entry-right">
+                    <div class="entry-title">Moteur de Jeu & Intelligence Artificielle</div>
+                    <p class="entry-desc">Architecture réseau pour mode multijoueur (synchronisation temps réel). Conception de l'IA d'agents autonomes via la création d'heuristiques d'analyse stratégique.</p>
+                </div>
+            </div>
+
+            <div class="entry">
+                <div class="entry-left">SaaS / Web</div>
+                <div class="entry-right">
+                    <div class="entry-title">Architecture DomoSchool</div>
+                    <p class="entry-desc">Conception backend/frontend complète. Base de données relationnelle sécurisée (SQL) et outil automatisé en Python synchronisé avec l'API Google Calendar.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2 class="section-header">Stack Technique</h2>
+            <div class="skills-grid">
+                <div class="skill-tag">Java</div>
+                <div class="skill-tag">C (Low-Level)</div>
+                <div class="skill-tag">OCaml</div>
+                <div class="skill-tag">Python</div>
+                <div class="skill-tag">SQL</div>
+                <div class="skill-tag">JavaScript / HTML / CSS</div>
+                <div class="skill-tag">Git / Gradle</div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2 class="section-header">Leadership & Expérience</h2>
+            
+            <div class="entry">
+                <div class="entry-left">Depuis 2023</div>
+                <div class="entry-right">
+                    <div class="entry-title">Professeur de NSI (Auto-entrepreneur)</div>
+                    <div class="entry-subtitle">Lycée La Jonchère & Clientèle Privée</div>
+                    <p class="entry-desc">Gestion de classe entière et cours particuliers (15h/semaine) en parallèle d'un cursus universitaire intensif. Pilotage complet de l'activité (prospection, création de supports).</p>
+                    <div class="highlight-bar">
+                        🏆 Résultat : 100% de réussite au Baccalauréat pour mes élèves.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2 class="section-header">Me Contacter</h2>
+            <div class="contact-grid">
+                <a href="mailto:nathan.pro.po@gmail.com" class="contact-item">
+                    <span style="font-size: 1.5rem;">✉️</span> nathan.pro.po@gmail.com
+                </a>
+                <a href="tel:+33770042562" class="contact-item">
+                    <span style="font-size: 1.5rem;">📞</span> +33 7 70 04 25 62
+                </a>
+                <a href="https://linkedin.com/in/potiern" target="_blank" class="contact-item">
+                    <span style="font-size: 1.5rem;">🔗</span> LinkedIn : /in/potiern
+                </a>
+                <div class="contact-item">
+                    <span style="font-size: 1.5rem;">📍</span> Versailles, France
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // --- 1. ANIMATION D'APPARITION AU SCROLL (Style Apple) ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15 // Déclenche quand 15% de la carte est visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Ne joue l'animation qu'une fois
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // --- 2. CANVAS RÉSEAU IA INTENSE ---
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        let mouse = { x: null, y: null };
+
+        const config = {
+            // On enlève particleCount fixe
+            densityRatio: 7000, // Plus le chiffre est grand, moins il y a de points
+            maxDistance: 150,
+            particleSpeed: 0.5,
+            pulseSpeed: 0.01,
+            mouseInfluenceRadius: 250
+        };
+
+        let lastWidth = window.innerWidth;
+
+        window.addEventListener('resize', () => {
+            // 1. On met à jour les dimensions globales pour éviter que le canvas soit étiré
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+
+            // 2. On ne recrée le réseau QUE si la largeur a changé (ex: rotation de l'écran)
+            if (window.innerWidth !== lastWidth) {
+                lastWidth = window.innerWidth;
+                initCanvas(); 
+            }
+        });
+        window.addEventListener('mousemove', e => { mouse.x = e.x; mouse.y = e.y; });
+        window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            
+            // Si l'écran est petit (mobile), on réduit un peu la distance des liens
+            if (width < 768) {
+                config.maxDistance = 100;
+                config.mouseInfluenceRadius = 150;
+            } else {
+                config.maxDistance = 150;
+                config.mouseInfluenceRadius = 250;
+            }
+
+            const calculatedCount = Math.floor((width * height) / config.densityRatio);
+            const finalCount = Math.max(40, Math.min(calculatedCount, 350));
+
+            particles = [];
+            for (let i = 0; i < finalCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * config.particleSpeed;
+                this.vy = (Math.random() - 0.5) * config.particleSpeed;
+                this.baseRadius = Math.random() * 2 + 1;
+                this.radius = this.baseRadius;
+                this.pulse = Math.random() * Math.PI * 2;
+                this.alpha = Math.random() * 0.5 + 0.1; 
+            }
+
+            draw() {
+                this.pulse += config.pulseSpeed;
+                this.radius = this.baseRadius + Math.sin(this.pulse) * 0.5;
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 113, 227, ${this.alpha})`;
+                ctx.fill();
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x <= 0 && this.vx < 0) this.vx *= -1;
+                if (this.x >= width && this.vx > 0) this.vx *= -1;
+                if (this.y <= 0 && this.vy < 0) this.vy *= -1;
+                if (this.y >= height && this.vy > 0) this.vy *= -1;
+
+                if (mouse.x != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (distance < config.mouseInfluenceRadius) {
+                        let force = (config.mouseInfluenceRadius - distance) / config.mouseInfluenceRadius;
+                        this.x += dx * force * 0.005; 
+                        this.y += dy * force * 0.005;
+                    }
+                }
+            }
+        }
+
+        function drawLines() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+
+                    if (distance < config.maxDistance) {
+                        let opacity = 1 - (distance / config.maxDistance);
+                        
+                        ctx.lineWidth = 0.5;
+                        ctx.strokeStyle = `rgba(200, 200, 202, ${opacity * 0.2})`;
+
+                        if (mouse.x != null) {
+                            let mDx = mouse.x - particles[i].x;
+                            let mDy = mouse.y - particles[i].y;
+                            let mDist = Math.sqrt(mDx*mDx + mDy*mDy);
+                            
+                            if (mDist < config.mouseInfluenceRadius) {
+                                ctx.strokeStyle = `rgba(0, 113, 227, ${opacity * 0.7})`;
+                                ctx.lineWidth = 1.2;
+                            }
+                        }
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            const gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width);
+            gradient.addColorStop(0, "#ffffff");
+            gradient.addColorStop(1, "#f5f5f7");
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0,0,width,height);
+
+            drawLines();
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        initCanvas();
+        animate();
+    </script>
+</body>
 </html>
