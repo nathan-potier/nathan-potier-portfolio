@@ -315,7 +315,7 @@
             align-items: center;
             gap: 15px;
             padding: 20px;
-            background: white;
+            background: rgb(235, 235, 235);
             border-radius: 20px;
             text-decoration: none;
             color: var(--text-main);
@@ -391,6 +391,68 @@
           }
 
         }
+        /* --- MODE SOMBRE AUTOMATIQUE --- */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #000000;
+                --text-main: #f5f5f7;
+                --text-secondary: #a1a1a6;
+                --accent: #2997ff;
+                --glass: rgba(28, 28, 30, 0.75);
+                --glass-border: rgba(255, 255, 255, 0.1); /* Bordures plus douces */
+                --shadow: 0 20px 40px rgba(0,0,0,0.5);
+            }
+
+            /* Titre dégradé adapté au mode sombre */
+            .hero-name {
+                background: linear-gradient(135deg, #ffffff 0%, #86868b 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            /* 1. Correction du contour de la photo de profil */
+            .hero-pic-container {
+                background: #1c1c1e;
+                box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            }
+
+            /* 2. Correction des réseaux sociaux (et de leur hover) */
+            .hero-social-link {
+                background: rgba(255, 255, 255, 0.05);
+            }
+            .hero-social-link:hover {
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            /* 3. Correction des lignes de séparation invisibles en mode sombre */
+            .section-header::after {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            .entry-right {
+                border-left: 2px solid rgba(255, 255, 255, 0.1);
+            }
+
+            /* 4. Correction des tags de compétences */
+            .skill-tag {
+                background: rgba(255, 255, 255, 0.05); /* Légèrement transparent */
+                border: 1px solid var(--glass-border);
+                color: var(--text-main);
+            }
+            .skill-tag:hover {
+                background: rgba(41, 151, 255, 0.15); /* Teinte bleutée au survol */
+                border-color: var(--accent);
+            }
+
+            /* 5. Correction des boutons de contact */
+            .contact-item {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid transparent;
+            }
+            .contact-item:hover {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: var(--glass-border);
+            }
+        }
     </style>
 </head>
 <body>
@@ -440,7 +502,7 @@
                     <div class="entry-subtitle">Université Paris Cité (Diderot)</div>
                     <p class="entry-desc">Cursus intensif axé sur la théorie, la conception d'algorithmes et l'architecture des systèmes d'exploitation.</p>
                     <div class="highlight-bar">
-                        ✨ Top Promo : 6ème/160 (L3). OCaml (19,69/20), C (18,5/20).
+                        Top Promo : 6ème/160 (L3).
                     </div>
                 </div>
             </div>
@@ -506,7 +568,7 @@
                     <div class="entry-subtitle">Lycée La Jonchère & Clientèle Privée</div>
                     <p class="entry-desc">Gestion de classe entière et cours particuliers (15h/semaine) en parallèle d'un cursus universitaire intensif. Pilotage complet de l'activité (prospection, création de supports).</p>
                     <div class="highlight-bar">
-                        🏆 Résultat : 100% de réussite au Baccalauréat pour mes élèves.
+                        Résultat : 100% de réussite au Baccalauréat pour mes élèves.
                     </div>
                 </div>
             </div>
@@ -515,18 +577,39 @@
         <section class="section-card">
             <h2 class="section-header">Me Contacter</h2>
             <div class="contact-grid">
+                
                 <a href="mailto:nathan.pro.po@gmail.com" class="contact-item">
-                    <span style="font-size: 1.5rem;">✉️</span> nathan.pro.po@gmail.com
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    nathan.pro.po@gmail.com
                 </a>
+                
                 <a href="tel:+33770042562" class="contact-item">
-                    <span style="font-size: 1.5rem;">📞</span> +33 7 70 04 25 62
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    +33 7 70 04 25 62
                 </a>
+                
                 <a href="https://linkedin.com/in/potiern" target="_blank" class="contact-item">
-                    <span style="font-size: 1.5rem;">🔗</span> LinkedIn : /in/potiern
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                        <rect x="2" y="9" width="4" height="12"></rect>
+                        <circle cx="4" cy="4" r="2"></circle>
+                    </svg>
+                    LinkedIn : /in/potiern
                 </a>
+                
                 <div class="contact-item">
-                    <span style="font-size: 1.5rem;">📍</span> Versailles, France
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Versailles, France
                 </div>
+                
             </div>
         </section>
 
@@ -559,6 +642,11 @@
         let width, height;
         let particles = [];
         let mouse = { x: null, y: null };
+
+        let isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            isDarkMode = event.matches;
+        });
 
         const config = {
             // On enlève particleCount fixe
@@ -663,7 +751,9 @@
                         let opacity = 1 - (distance / config.maxDistance);
                         
                         ctx.lineWidth = 0.5;
-                        ctx.strokeStyle = `rgba(200, 200, 202, ${opacity * 0.2})`;
+                        let baseColor = isDarkMode ? '41, 151, 255' : '0, 113, 227';
+                        let currentOpacity = isDarkMode ? opacity : opacity * 0.2;
+                        ctx.strokeStyle = `rgba(${baseColor}, ${currentOpacity})`;
 
                         if (mouse.x != null) {
                             let mDx = mouse.x - particles[i].x;
@@ -671,7 +761,8 @@
                             let mDist = Math.sqrt(mDx*mDx + mDy*mDy);
                             
                             if (mDist < config.mouseInfluenceRadius) {
-                                ctx.strokeStyle = `rgba(0, 113, 227, ${opacity * 0.7})`;
+                                let hoverOpacity = isDarkMode ? opacity * 2 : opacity * 0.7;
+                                ctx.strokeStyle = `rgba(0, 113, 227, ${hoverOpacity})`;
                                 ctx.lineWidth = 1.2;
                             }
                         }
@@ -689,8 +780,10 @@
             ctx.clearRect(0, 0, width, height);
             
             const gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width);
-            gradient.addColorStop(0, "#ffffff");
-            gradient.addColorStop(1, "#f5f5f7");
+            const gradStart = isDarkMode ? "#1c1c1e" : "#ffffff";
+            const gradEnd = isDarkMode ? "#000000" : "#f5f5f7";
+            gradient.addColorStop(0, gradStart);
+            gradient.addColorStop(1, gradEnd);
             ctx.fillStyle = gradient;
             ctx.fillRect(0,0,width,height);
 
