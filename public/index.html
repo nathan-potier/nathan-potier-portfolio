@@ -39,14 +39,13 @@
             height: 100vh;
             z-index: 0;
             opacity: 0.7;
-            pointer-events: none; /* AJOUTEZ CETTE LIGNE : Empêche le doigt d'accrocher le canvas */
+            pointer-events: none;
         }
 
         /* --- SECTION ACCUEIL (100vh - Plein Écran) --- */
         .hero {
             position: relative;
             z-index: 1;
-            /* Utilise la hauteur dynamique du viewport pour éviter les bugs Safari/Chrome */
             height: 100vh; 
             height: 100svh;
             display: flex;
@@ -55,7 +54,6 @@
             align-items: center;
             text-align: center;
             padding: 20px;
-            /* On rajoute un petit padding en bas pour que le contenu ne soit jamais collé au bord */
             padding-bottom: 80px; 
         }
 
@@ -150,7 +148,7 @@
         /* Indicateur de scroll */
         .scroll-indicator {
             position: absolute;
-            bottom: 100px; /* Remonté pour éviter la barre Safari/Chrome */
+            bottom: 100px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -195,7 +193,6 @@
             padding: 50px;
             box-shadow: var(--shadow);
             
-            /* Pour l'animation d'apparition */
             opacity: 0;
             transform: translateY(40px);
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -258,6 +255,17 @@
             color: var(--accent);
             font-weight: 500;
             margin-bottom: 15px;
+        }
+        
+        .entry-subtitle a {
+            color: inherit;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+        
+        .entry-subtitle a:hover {
+            opacity: 0.7;
+            text-decoration: underline;
         }
 
         .entry-desc {
@@ -336,61 +344,29 @@
             .contact-grid { grid-template-columns: 1fr; }
             .section-card { padding: 30px 20px; }
         }
-        /* Ajustement pour les écrans de faible hauteur (Mobile ou petit navigateur) */
         @media (max-height: 850px) {
-        .hero-pic-container {
-            width: 160px; /* Réduit encore plus la photo */
-            height: 160px;
-            margin-bottom: 10px;
-        }
-        
-        .hero-name {
-            font-size: 2rem;
-            margin-bottom: 5px;
-        }
-
-        .hero-title {
-            font-size: 1rem;
-            margin-bottom: 10px;
-        }
-
-        .hero-desc {
-            font-size: 0.9rem;
-            max-width: 90%;
-            line-height: 1.4;
-        }
-
-        .hero-social-bar {
-            margin-top: 10px;
-        }
-
-        .scroll-indicator {
-            bottom: 70px; /* Ajusté pour rester visible au-dessus des barres */
-        }
-        
-        .scroll-indicator span {
-            font-size: 0.75rem; /* Texte plus petit pour gagner de la place */
-        }
-    }
-        /* Ajustement spécifique pour les téléphones très petits (iPhone SE, etc.) */
-        @media (max-height: 600px) {
             .hero-pic-container {
-                width: 100px;
-                height: 100px;
+                width: 160px;
+                height: 160px;
+                margin-bottom: 10px;
             }
-
+            .hero-name { font-size: 2rem; margin-bottom: 5px; }
+            .hero-title { font-size: 1rem; margin-bottom: 10px; }
+            .hero-desc { font-size: 0.9rem; max-width: 90%; line-height: 1.4; }
+            .hero-social-bar { margin-top: 10px; }
+            .scroll-indicator { bottom: 70px; }
+            .scroll-indicator span { font-size: 0.75rem; }
         }
-        @media (max-height: 450px){
-            .hero-desc {
-                display: none; /* Cache la description sur les écrans minuscules pour garder le bouton visible */
-            }
+        @media (max-height: 600px) {
+            .hero-pic-container { width: 100px; height: 100px; }
         }
-        @media (max-height: 390px){
-          .hero-social-bar {
-              display: none; /* Cache la barre de réseaux sociaux sur les écrans très petits pour éviter l'encombrement */
-          }
-
+        @media (max-height: 450px) {
+            .hero-desc { display: none; }
         }
+        @media (max-height: 390px) {
+            .hero-social-bar { display: none; }
+        }
+        
         /* --- MODE SOMBRE AUTOMATIQUE --- */
         @media (prefers-color-scheme: dark) {
             :root {
@@ -399,51 +375,37 @@
                 --text-secondary: #a1a1a6;
                 --accent: #2997ff;
                 --glass: rgba(28, 28, 30, 0.75);
-                --glass-border: rgba(255, 255, 255, 0.1); /* Bordures plus douces */
+                --glass-border: rgba(255, 255, 255, 0.1);
                 --shadow: 0 20px 40px rgba(0,0,0,0.5);
             }
 
-            /* Titre dégradé adapté au mode sombre */
             .hero-name {
                 background: linear-gradient(135deg, #ffffff 0%, #86868b 100%);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
             }
 
-            /* 1. Correction du contour de la photo de profil */
             .hero-pic-container {
                 background: #1c1c1e;
                 box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             }
 
-            /* 2. Correction des réseaux sociaux (et de leur hover) */
-            .hero-social-link {
-                background: rgba(255, 255, 255, 0.05);
-            }
-            .hero-social-link:hover {
-                background: rgba(255, 255, 255, 0.15);
-            }
+            .hero-social-link { background: rgba(255, 255, 255, 0.05); }
+            .hero-social-link:hover { background: rgba(255, 255, 255, 0.15); }
 
-            /* 3. Correction des lignes de séparation invisibles en mode sombre */
-            .section-header::after {
-                background: rgba(255, 255, 255, 0.1);
-            }
-            .entry-right {
-                border-left: 2px solid rgba(255, 255, 255, 0.1);
-            }
+            .section-header::after { background: rgba(255, 255, 255, 0.1); }
+            .entry-right { border-left: 2px solid rgba(255, 255, 255, 0.1); }
 
-            /* 4. Correction des tags de compétences */
             .skill-tag {
-                background: rgba(255, 255, 255, 0.05); /* Légèrement transparent */
+                background: rgba(255, 255, 255, 0.05);
                 border: 1px solid var(--glass-border);
                 color: var(--text-main);
             }
             .skill-tag:hover {
-                background: rgba(41, 151, 255, 0.15); /* Teinte bleutée au survol */
+                background: rgba(41, 151, 255, 0.15);
                 border-color: var(--accent);
             }
 
-            /* 5. Correction des boutons de contact */
             .contact-item {
                 background: rgba(255, 255, 255, 0.05);
                 border: 1px solid transparent;
@@ -465,7 +427,7 @@
         </div>
         <h1 class="hero-name">Nathan Potier</h1>
         <h2 class="hero-title">Informatique Fondamentale & Algorithmique</h2>
-        <p class="hero-desc">Top 5% de promotion à l'Université Paris Cité.<br>Allier rigueur mathématique, finance et architecture logicielle.</p>
+        <p class="hero-desc">Diplômé Mention Très Bien (Top 6/123) de l'Université Paris Cité.<br>Allier rigueur mathématique, architecture logicielle et intelligence artificielle.</p>
         
         <div class="hero-social-bar">
             <a href="mailto:nathan.pro.po@gmail.com" class="hero-social-link" title="Email">
@@ -474,7 +436,7 @@
             <a href="https://linkedin.com/in/potiern" target="_blank" class="hero-social-link" title="LinkedIn">
                 <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5V13.2a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
             </a>
-            <a href="https://github.com/ton-pseudo" target="_blank" class="hero-social-link" title="GitHub">
+            <a href="https://github.com/nathan-potier" target="_blank" class="hero-social-link" title="GitHub">
                 <svg viewBox="0 0 24 24"><path d="M12 .3a12.1 12.1 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.3 2.8.1 3.2.8.8 1.3 1.9 1.3 3.1 0 4.7-2.8 5.6-5.5 6 .4.3.8 1 .8 2.2v3.3c0 .3.2.7.8.6A12.1 12.1 0 0 0 12 .3z"/></svg>
             </a>
             <a href="tel:+33770042562" class="hero-social-link" title="Téléphone">
@@ -494,15 +456,24 @@
         
         <section class="section-card">
             <h2 class="section-header">Excellence Académique</h2>
+
+            <div class="entry">
+                <div class="entry-left">2026 — 2028</div>
+                <div class="entry-right">
+                    <div class="entry-title">Master Informatique - Parcours AI2D</div>
+                    <div class="entry-subtitle"><a href="https://sciences.sorbonne-universite.fr/formation-sciences/masters/master-informatique/parcours-ai2d" target="_blank" title="Visiter le site de Sorbonne Université">Sorbonne Université</a></div>
+                    <p class="entry-desc">Spécialisation de haut niveau en Apprentissage Automatique, Intelligence Artificielle et Données (AI2D).</p>
+                </div>
+            </div>
             
             <div class="entry">
                 <div class="entry-left">2023 — 2026</div>
                 <div class="entry-right">
                     <div class="entry-title">Licence Informatique Fondamentale</div>
-                    <div class="entry-subtitle">Université Paris Cité (Diderot)</div>
-                    <p class="entry-desc">Cursus intensif axé sur la théorie, la conception d'algorithmes et l'architecture des systèmes d'exploitation.</p>
+                    <div class="entry-subtitle"><a href="https://odf.u-paris.fr/fr/offre-de-formation/licence-XA/sciences-technologies-sante-STS/informatique-K2VO937D/licence-informatique-parcours-informatique-fondamentale-JRKM8J1B.html" target="_blank" title="Visiter le site de Paris Cité">Université Paris Cité (Diderot)</a></div>
+                    <p class="entry-desc">Cursus intensif axé sur la théorie mathématique, la conception d'algorithmes et l'architecture fine des systèmes d'exploitation.</p>
                     <div class="highlight-bar">
-                        Top Promo : 6ème/160 (L3).
+                        Diplômé avec Mention Très Bien : Top 6/123 de la promotion.
                     </div>
                 </div>
             </div>
@@ -521,10 +492,34 @@
             <h2 class="section-header">Projets & Algorithmique</h2>
             
             <div class="entry">
+                <div class="entry-left">Rust / Graphes</div>
+                <div class="entry-right">
+                    <div class="entry-title">Rustake - Moteur d'automatisation de compilation</div>
+                    <p class="entry-desc">Développement d'un outil en ligne de commande inspiré de <strong>Make</strong>. Implémentation d'un parseur TOML, résolution et parcours de graphes de dépendances avec détection fine de cycles récursifs, et optimisation des temps de compilation via un système de cache par hachage cryptographique du contenu des fichiers.</p>
+                </div>
+            </div>
+
+            <div class="entry">
+                <div class="entry-left">C / Réseau & Sécurité</div>
+                <div class="entry-right">
+                    <div class="entry-title">Protocole Paroles - Client/Serveur IPv6</div>
+                    <p class="entry-desc">Implémentation complète d'un protocole réseau de messagerie et de notifications. Architecture concurrente robuste gérant les communications TCP/UDP asynchrones, la sécurisation TLS des échanges (via OpenSSL) et un système strict d'authentification asymétrique par <strong>signature ED25519</strong>.</p>
+                </div>
+            </div>
+
+            <div class="entry">
+                <div class="entry-left">PostgreSQL / Modélisation</div>
+                <div class="entry-right">
+                    <div class="entry-title">RunTogether - Réseau Social Sportif</div>
+                    <p class="entry-desc">Conception complète de la base de données relationnelle (MCD/MLD) pour une plateforme communautaire. Création de requêtes SQL analytiques complexes (fonctions de fenêtrage, CTE récursives pour le degré de séparation sociale) et développement d'un algorithme de <strong>filtrage collaboratif</strong> calculant un indice hybride de recommandation de défis sportifs.</p>
+                </div>
+            </div>
+
+            <div class="entry">
                 <div class="entry-left">Java / Graphes</div>
                 <div class="entry-right">
                     <div class="entry-title">Simulateur Urbain & Pathfinding</div>
-                    <p class="entry-desc">Modélisation d'un environnement urbain basé sur la <strong>théorie des graphes</strong>. Implémentation, optimisation et comparaison d'algorithmes de recherche de chemin complexe (<strong>Dijkstra et A*</strong>).</p>
+                    <p class="entry-desc">Modélisation complète d'un environnement urbain basé sur la <strong>théorie des graphes</strong>. Implémentation, optimisation et comparaison d'algorithmes de recherche de chemin complexe (<strong>Dijkstra et A*</strong>).</p>
                 </div>
             </div>
 
@@ -532,7 +527,7 @@
                 <div class="entry-left">Java / Sockets</div>
                 <div class="entry-right">
                     <div class="entry-title">Moteur de Jeu & Intelligence Artificielle</div>
-                    <p class="entry-desc">Architecture réseau pour mode multijoueur (synchronisation temps réel). Conception de l'IA d'agents autonomes via la création d'heuristiques d'analyse stratégique.</p>
+                    <p class="entry-desc">Conception d'une architecture réseau multi-joueurs pour un moteur de jeu en temps réel. Conception et intégration d'une intelligence artificielle d'agents autonomes via la création d'heuristiques d'analyse stratégique.</p>
                 </div>
             </div>
 
@@ -540,7 +535,7 @@
                 <div class="entry-left">SaaS / Web</div>
                 <div class="entry-right">
                     <div class="entry-title">Architecture DomoSchool</div>
-                    <p class="entry-desc">Conception backend/frontend complète. Base de données relationnelle sécurisée (SQL) et outil automatisé en Python synchronisé avec l'API Google Calendar.</p>
+                    <p class="entry-desc">Conception backend/frontend complète d'une solution logicielle d'administration scolaire. Base de données relationnelle sécurisée (SQL) et outil automatisé en Python synchronisé avec l'API Google Calendar.</p>
                 </div>
             </div>
         </section>
@@ -548,27 +543,63 @@
         <section class="section-card">
             <h2 class="section-header">Stack Technique</h2>
             <div class="skills-grid">
-                <div class="skill-tag">Java</div>
+                <div class="skill-tag">Rust</div>
                 <div class="skill-tag">C (Low-Level)</div>
-                <div class="skill-tag">OCaml</div>
+                <div class="skill-tag">Java</div>
                 <div class="skill-tag">Python</div>
-                <div class="skill-tag">SQL</div>
+                <div class="skill-tag">OCaml</div>
+                <div class="skill-tag">SQL / PostgreSQL</div>
+                <div class="skill-tag">PHP</div>
                 <div class="skill-tag">JavaScript / HTML / CSS</div>
-                <div class="skill-tag">Git / Gradle</div>
+                <div class="skill-tag">Git / Linux</div>
             </div>
         </section>
 
         <section class="section-card">
-            <h2 class="section-header">Leadership & Expérience</h2>
+            <h2 class="section-header">Expérience Professionnelle</h2>
             
+            <div class="entry">
+                <div class="entry-left">Depuis 2024</div>
+                <div class="entry-right">
+                    <div class="entry-title">Développeur Web Freelance</div>
+                    <div class="entry-subtitle">Indépendant</div>
+                    <p class="entry-desc">Conception, développement et commercialisation de sites web sur-mesure pour des entreprises afin d'optimiser leur présence en ligne. Accompagnement technique complet, de l'expression des besoins à la mise en production et au référencement.</p>
+                </div>
+            </div>
+
             <div class="entry">
                 <div class="entry-left">Depuis 2023</div>
                 <div class="entry-right">
                     <div class="entry-title">Professeur de NSI (Auto-entrepreneur)</div>
                     <div class="entry-subtitle">Lycée La Jonchère & Clientèle Privée</div>
-                    <p class="entry-desc">Gestion de classe entière et cours particuliers (15h/semaine) en parallèle d'un cursus universitaire intensif. Pilotage complet de l'activité (prospection, création de supports).</p>
+                    <p class="entry-desc">Gestion de classe entière et cours particuliers (15h/semaine) en parallèle d'un cursus universitaire intensif. Pilotage complet de l'activité (prospection, création de supports pédagogiques avancés). <a href="https://www.superprof.fr/nsi-objectif-bac-renforcement-competences-informatique-diplome-bac-informatique-specialiste-algorithmes.html" target="_blank" style="color: var(--accent); font-weight: 500; text-decoration: none;">Voir mon profil Superprof</a>.</p>
                     <div class="highlight-bar">
                         Résultat : 100% de réussite au Baccalauréat pour mes élèves.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2 class="section-header">Centres d'Intérêt & Passions</h2>
+            
+            <div class="entry">
+                <div class="entry-left">Économie & Finance</div>
+                <div class="entry-right">
+                    <p class="entry-desc">Veille active et intérêt approfondi pour les dynamiques macroéconomiques et les mécanismes des marchés financiers. Recherche constante de ponts conceptuels entre les modèles financiers et la puissance algorithmique/architecture logicielle.</p>
+                </div>
+            </div>
+
+            <div class="entry">
+                <div class="entry-left">Musique & Création</div>
+                <div class="entry-right">
+                    <div class="entry-title">Pianiste Professionnel & Compositeur</div>
+                    <p class="entry-desc">Pratique avancée et professionnelle du piano, partagée entre l'interprétation de répertoire et la création originale. Travail rigoureux d'écriture instrumentale, de rédaction de partitions complexes et d'arrangements (projets purement musicaux, sans chant).</p>
+                    <p class="entry-desc" style="margin-top: 15px; font-weight: 500;">Écouter mes morceaux originaux sur les plateformes :</p>
+                    <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px;">
+                        <a href="https://music.apple.com/fr/artist/nathan/1771077818" target="_blank" class="skill-tag" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">Apple Music</a>
+                        <a href="https://open.spotify.com/intl-fr/artist/4YKpu8kjPzeeJ7oIITfkJF?si=w22H3c-YTnq17FqMP2fB0w" target="_blank" class="skill-tag" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">Spotify</a>
+                        <a href="https://link.deezer.com/s/33zRy62QhNc9kLD4GoyKW" target="_blank" class="skill-tag" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">Deezer</a>
                     </div>
                 </div>
             </div>
@@ -620,14 +651,14 @@
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.15 // Déclenche quand 15% de la carte est visible
+            threshold: 0.15
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    observer.unobserve(entry.target); // Ne joue l'animation qu'une fois
+                    observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
@@ -649,8 +680,7 @@
         });
 
         const config = {
-            // On enlève particleCount fixe
-            densityRatio: 7000, // Plus le chiffre est grand, moins il y a de points
+            densityRatio: 7000,
             maxDistance: 150,
             particleSpeed: 0.5,
             pulseSpeed: 0.01,
@@ -660,11 +690,9 @@
         let lastWidth = window.innerWidth;
 
         window.addEventListener('resize', () => {
-            // 1. On met à jour les dimensions globales pour éviter que le canvas soit étiré
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
 
-            // 2. On ne recrée le réseau QUE si la largeur a changé (ex: rotation de l'écran)
             if (window.innerWidth !== lastWidth) {
                 lastWidth = window.innerWidth;
                 initCanvas(); 
@@ -677,7 +705,6 @@
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             
-            // Si l'écran est petit (mobile), on réduit un peu la distance des liens
             if (width < 768) {
                 config.maxDistance = 100;
                 config.mouseInfluenceRadius = 150;
